@@ -18,7 +18,7 @@ async function run() {
     try {
       // Connect the client to the server
       await client.connect();
-    //   console.log('database connected')
+      console.log('database connected')
     //   const database = client.db('Engineers-world');
     // const jobsCollection = database.collection('Jobs');
     // const favoriteCollection = database.collection('Favorites');
@@ -190,9 +190,7 @@ async function run() {
 //         }
 //         res.json(admin)
 //     })
-app.get('/',(req,res)=>{
-    res.send('the server is responsing')
-    })
+
 
     app.get('/getAdmin', async(req,res)=>{
 const query=req.query.email
@@ -210,7 +208,9 @@ admin=true
   }
   run().catch(console.dir);
 
-
+  app.get('/',(req,res)=>{
+    res.send('the server is responsing')
+    })
 app.listen(port,()=>{
     console.log('hello i am from server')
 })
