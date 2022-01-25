@@ -19,16 +19,16 @@ async function run() {
       // Connect the client to the server
       await client.connect();
       console.log('database connected')
-      const database = client.db('Engineers-world');
-    const jobsCollection = database.collection('Jobs');
-    const favoriteCollection = database.collection('Favorites');
-    const reviewCollection=database.collection('reviews')
-    const userCollection=database.collection('users')
+      const database = client.db('ShareTrip');
+    const blogsCollection = database.collection('blogs');
+    // const favoriteCollection = database.collection('Favorites');
+    // const reviewCollection=database.collection('reviews')
+    // const userCollection=database.collection('users')
     // add item
-    app.post('/addJob', async(req,res)=>{
-        const jobInfo=req.body
-        console.log('hit the api',jobInfo)
-        const insertedResult=await jobsCollection.insertOne(jobInfo)
+    app.post('/addBlog', async(req,res)=>{
+        const blogInfo=req.body
+        console.log('hit the api',blogInfo)
+        const insertedResult=await blogsCollection.insertOne(blogInfo)
         res.json(insertedResult)
         console.log(insertedResult)
     })
