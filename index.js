@@ -190,6 +190,10 @@ async function run() {
 //         }
 //         res.json(admin)
 //     })
+app.get('/',(req,res)=>{
+    res.send('the server is responsing')
+    })
+
     app.get('/getAdmin', async(req,res)=>{
 const query=req.query.email
 const getAdmin=await userCollection.find({email:query}).toArray();
@@ -206,9 +210,7 @@ admin=true
   }
   run().catch(console.dir);
 
-app.get('/',(req,res)=>{
-res.send('the server is responsing')
-})
+
 app.listen(port,()=>{
     console.log('hello i am from server')
 })
