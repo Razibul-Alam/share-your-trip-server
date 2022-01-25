@@ -61,19 +61,18 @@ async function run() {
     //     res.json(insertedResult)
     // })
     // load allevents
-    app.get('/alljobs', async(req,res)=>{
-        const query=req.query.search
-        console.log(query)
-        if (query) {
-            const getAllJobs=await jobsCollection.find({}).toArray();
+    app.get('/allblogs', async(req,res)=>{
+        // const query=req.query.search
+        // console.log(query)
+            const getAllblogs=await blogsCollection.find({}).toArray();
             // const searchResult=getAllJobs.filter(job=>job.designation.include(query))
             // res.json(searchResult)
-            const searchResult=getAllJobs.filter(job=>job.designation.toLowerCase().includes(query.toLowerCase()))
-            res.json(searchResult)
-        }
-        else{
-            res.json(getAllJobs)
-        }
+            // const searchResult=getAllJobs.filter(job=>job.designation.toLowerCase().includes(query.toLowerCase()))
+            // res.json(searchResult)
+        
+        // else{
+            res.json(getAllblogs)
+        // }
         
     })
     // load allevents
