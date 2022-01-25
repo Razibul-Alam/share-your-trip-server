@@ -81,6 +81,9 @@ async function run() {
         const getFavorite=await favoriteCollection.find({}).toArray();
         res.json(getFavorite)
     })
+    app.get('/test',(req,res)=>{
+        res.send('just test')
+    })
     // get all reviews
     app.get('/allReviews', async(req,res)=>{
         const getAllReviews=await reviewCollection.find({}).toArray();
