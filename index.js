@@ -197,17 +197,6 @@ admin=true
         res.json(admin)
     })
 
-
-    app.get('/getAdmin', async(req,res)=>{
-const query=req.query.email
-const getAdmin=await userCollection.find({email:query}).toArray();
-        let admin=false
-        if(getAdmin[0].role==='admin'){
-admin=true
-        }
-        res.json(admin)
-    })
-
     } finally {
     //   await client.close();
     }
