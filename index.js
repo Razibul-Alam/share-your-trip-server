@@ -4,6 +4,7 @@ const cors=require('cors')
 const{MongoClient}=require('mongodb')
 require("dotenv").config();
 const port=process.env.PORT || 5000
+const ObjectId=require('mongodb').ObjectId
 
 //  using middleware
 app.use(cors())
@@ -21,9 +22,10 @@ async function run() {
       console.log('database connected')
       const database = client.db('ShareTrip');
     const blogsCollection = database.collection('blogs');
+    const approvedBlogsCollection = database.collection('Approved-blogs');
     // const favoriteCollection = database.collection('Favorites');
     // const reviewCollection=database.collection('reviews')
-    // const userCollection=database.collection('users')
+    const userCollection=database.collection('users')
     // add item
     app.post('/addBlog', async(req,res)=>{
         const blogInfo=req.body
@@ -54,12 +56,12 @@ async function run() {
     //     res.json(insertedResult)
     // })
     // add user
-    // app.post('/addUser', async(req,res)=>{
-    //     const user=req.body
-    //     console.log(user)
-    //     const insertedResult=await userCollection.insertOne(user)
-    //     res.json(insertedResult)
-    // })
+    app.post('/addUser', async(req,res)=>{
+        const user=req.body
+        console.log(user)
+        const insertedResult=await userCollection.insertOne(user)
+        res.json(insertedResult)
+    })
     // load allevents
     app.get('/allblogs', async(req,res)=>{
         // const query=req.query.search
@@ -94,24 +96,24 @@ async function run() {
     //     res.json(getOrders)
     // })
     // load all bookings by email
-    // app.get('/getOrdersByEmail', async(req,res)=>{
-    //     const queryEmail=req.query.email;
-    //     console.log(queryEmail)
-    //     const getOrders=await orderCollection.find({email:queryEmail}).toArray();
-    //     res.json(getOrders)
-    // })
+    app.get('/getBlogsByEmail', async(req,res)=>{
+        const queryEmail=req.query.email;
+        console.log(queryEmail)
+        const getBlogs=await blogsCollection.find({email:queryEmail}).toArray();
+        res.json(getBlogs)
+    })
     // load single item
-    app.get('/singleApply/:id', async(req,res)=>{
+    app.get('/singleBlog/:id', async(req,res)=>{
         const itemQuery=req.params.id
-        const getSingleApply=await jobsCollection.find({_id:ObjectId(itemQuery)}).toArray();
-        res.json(getSingleApply)
+        const getSingleBlog=await blogsCollection.find({_id:ObjectId(itemQuery)}).toArray();
+        res.json(getSingleBlog)
     })
      
     //  delete an item by id
     app.delete('/removeItem/:id',async(req,res)=>{
         const removeId=req.params.id
         // console.log(removeId)
-        const deletedItem= await orderCollection.deleteOne({_id:ObjectId(removeId)})
+        const deletedItem= await blogsCollection.deleteOne({_id:ObjectId(removeId)})
         // console.log(deletedItem)
         res.json(deletedItem)
     })
@@ -125,73 +127,75 @@ async function run() {
     })
     
      // update status
-    //  app.put('/updateStatus',async(req,res)=>{
-    //     const updateInfo=req.body
-    //     const filter = { _id:ObjectId(req.body.id)};
-    //     const updateStatus = {
+     app.put('/updateStatus',async(req,res)=>{
+        const updateInfo=req.body
+        const filter = { _id:ObjectId(req.body.id)};
+        const updateStatus = {
 
-    //         $set: {
+            $set: {
       
-    //           status:req.body.status,
+              status:req.body.status,
       
-    //         },
+            },
       
-    //       };
-    //       const updateResult=await orderCollection.updateOne(filter,updateStatus) 
-    //       res.json(updateResult)
-    // })
+          };
+          const updateResult=await blogsCollection.updateOne(filter,updateStatus) 
+          res.json(updateResult)
+    })
 
     // make admin
-//      app.put('/saveUser',async(req,res)=>{
-//      const userInfo=req.body
-//    console.log(userInfo)
-//    const filter={email:userInfo.email}
-//         const option={upsert:true}
-//         const updateStatus = {
+     app.put('/saveUser',async(req,res)=>{
+     const userInfo=req.body
+   console.log(userInfo)
+   const filter={email:userInfo.email}
+        const option={upsert:true}
+        const updateStatus = {
 
-//             $set: {
+            $set: {
       
-//             userInfo
+            email:userInfo.email,
+            displayName:userInfo.displayName,
+            role:userInfo.role
       
-//             },
+            },
       
-//           };
+          };
        
-//            const updateResult=await userCollection.updateOne(filter,updateStatus,option) 
-//           console.log(updateResult)
-//           res.json(updateResult)
-//     })
+           const updateResult=await userCollection.updateOne(filter,updateStatus,option) 
+          console.log(updateResult)
+          res.json(updateResult)
+    })
     // make admin
-    //  app.put('/createAdmin/:email',async(req,res)=>{
-    //      console.log(req.body)
-    //    const queryEmail=req.params.email
-    //     const filter={email:queryEmail}
-    //     console.log(filter)
-    //     // const option={upsert:true}
-    //     const updateStatus = {
+     app.put('/createAdmin/:email',async(req,res)=>{
+         console.log(req.body)
+       const queryEmail=req.params.email
+        const filter={email:queryEmail}
+        console.log(filter)
+        // const option={upsert:true}
+        const updateStatus = {
 
-    //         $set: {
+            $set: {
       
-    //           role:req.body.role
+              role:req.body.role
       
-    //         },
+            },
       
-    //       };
-    //       const updateResult=await userCollection.updateOne(filter,updateStatus) 
-    //       console.log(updateResult)
-    //       res.json(updateResult)
-    // })
+          };
+          const updateResult=await userCollection.updateOne(filter,updateStatus) 
+          console.log(updateResult)
+          res.json(updateResult)
+    })
 
     // check admin
-//     app.get('/getAdmin', async(req,res)=>{
-// const query=req.query.email
-// const getAdmin=await userCollection.find({email:query}).toArray();
-//         let admin=false
-//         if(getAdmin[0].role==='admin'){
-// admin=true
-//         }
-//         res.json(admin)
-//     })
+    app.get('/getAdmin', async(req,res)=>{
+const query=req.query.email
+const getAdmin=await userCollection.find({email:query}).toArray();
+        let admin=false
+        if(getAdmin[0].role==='admin'){
+admin=true
+        }
+        res.json(admin)
+    })
 
 
     app.get('/getAdmin', async(req,res)=>{
