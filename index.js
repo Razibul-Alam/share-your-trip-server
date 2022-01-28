@@ -23,10 +23,10 @@ async function run() {
       const database = client.db('ShareTrip');
     const blogsCollection = database.collection('blogs');
     const approvedBlogsCollection = database.collection('Approved-blogs');
-    // const favoriteCollection = database.collection('Favorites');
-    // const reviewCollection=database.collection('reviews')
+    const commentCollection = database.collection('comments');
     const userCollection=database.collection('users')
-    // add item
+    
+    // create a blog
     app.post('/addBlog', async(req,res)=>{
         const blogInfo=req.body
         console.log('hit the api',blogInfo)
@@ -34,27 +34,14 @@ async function run() {
         res.json(insertedResult)
         console.log(insertedResult)
     })
-    app.post('/addfavorite', async(req,res)=>{
-        const favoriteInfo=req.body
-        console.log('hit the api',favoriteInfo)
-        const insertedResult=await favoriteCollection.insertOne(favoriteInfo)
+    app.post('/addComment', async(req,res)=>{
+        const commentInfo=req.body
+        console.log('hit the api',commentInfo)
+        const insertedResult=await commentCollection.insertOne(commentInfo)
         res.json(insertedResult)
         console.log(insertedResult)
     })
-    // add booking order
-    // app.post('/addOrder', async(req,res)=>{
-    //     const carOrder=req.body
-    //     console.log(carOrder)
-    //     const insertedResult=await orderCollection.insertOne(carOrder)
-    //     res.json(insertedResult)
-    // })
-    // add review
-    // app.post('/addReview', async(req,res)=>{
-    //     const review=req.body
-    //     console.log(review)
-    //     const insertedResult=await reviewCollection.insertOne(review)
-    //     res.json(insertedResult)
-    // })
+
     // add user
     app.post('/addUser', async(req,res)=>{
         const user=req.body
@@ -62,40 +49,30 @@ async function run() {
         const insertedResult=await userCollection.insertOne(user)
         res.json(insertedResult)
     })
-    // load allevents
+    // load all Blogs
     app.get('/allblogs', async(req,res)=>{
-        // const query=req.query.search
-        // console.log(query)
+        const query=req.query.search
             const getAllblogs=await blogsCollection.find({}).toArray();
-            // const searchResult=getAllJobs.filter(job=>job.designation.include(query))
-            // res.json(searchResult)
-            // const searchResult=getAllJobs.filter(job=>job.designation.toLowerCase().includes(query.toLowerCase()))
-            // res.json(searchResult)
-        
-        // else{
             res.json(getAllblogs)
-        // }
         
     })
-    // load allevents
-    app.get('/getfavorite', async(req,res)=>{
-        const getFavorite=await favoriteCollection.find({}).toArray();
-        res.json(getFavorite)
+    // load allcomments
+    app.get('/getComments', async(req,res)=>{
+        const queryEmail=req.query.search;
+        console.log(queryEmail)
+        const getComments=await commentCollection.find({identy:queryEmail}).toArray();
+        res.json(getComments)
     })
     app.get('/test',(req,res)=>{
         res.send('just test')
     })
-    // get all reviews
-    app.get('/allReviews', async(req,res)=>{
-        const getAllReviews=await reviewCollection.find({}).toArray();
-        res.json(getAllReviews)
-    })
-    // load all bookings
-    // app.get('/allOrders', async(req,res)=>{
-    //     const getOrders=await orderCollection.find({}).toArray();
-    //     res.json(getOrders)
+    // // get all reviews
+    // app.get('/allReviews', async(req,res)=>{
+    //     const getAllReviews=await reviewCollection.find({}).toArray();
+    //     res.json(getAllReviews)
     // })
-    // load all bookings by email
+    
+    // load all blogs by email
     app.get('/getBlogsByEmail', async(req,res)=>{
         const queryEmail=req.query.email;
         console.log(queryEmail)
@@ -114,14 +91,6 @@ async function run() {
         const removeId=req.params.id
         // console.log(removeId)
         const deletedItem= await blogsCollection.deleteOne({_id:ObjectId(removeId)})
-        // console.log(deletedItem)
-        res.json(deletedItem)
-    })
-    //  delete an item by id from cars collection
-    app.delete('/removeCarItem/:id',async(req,res)=>{
-        const removeId=req.params.id
-        // console.log(removeId)
-        const deletedItem= await carsCollection.deleteOne({_id:ObjectId(removeId)})
         // console.log(deletedItem)
         res.json(deletedItem)
     })
